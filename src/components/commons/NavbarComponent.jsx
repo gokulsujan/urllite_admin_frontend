@@ -1,11 +1,21 @@
 import { AccountCircle, AdminPanelSettings, Logout, Person } from "@mui/icons-material"
 import { AppBar, Box, Divider, IconButton, Link, ListItemIcon, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAuth } from "../auth/AuthContextProviderComponent"
+import { useNavigate } from "react-router-dom"
 
 const NavbarComponent = () => {
     const [anchorEl, setAnchorEl] = useState(null)
     const { isLoggedIn, login, logout } = useAuth();
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        localStorage.removeItem("access_token");
+        logout()
+        navigate("/signin");
+        handleClose();
+    }
+
 
     const handleMenu = (e) => {
         setAnchorEl(e.currentTarget)
@@ -19,12 +29,14 @@ const NavbarComponent = () => {
         handleClose()
         // TODO -> Navigate to profile page
     }
-
-    const handleLogout = () => {
-        localStorage.removeItem("access_token");
-        handleClose();
-        // Todo -> Navigate to signin
-    }
+    useEffect(() => {
+        const token = localStorage.getItem("access_token");
+        if (token) {
+            login();
+        } else {
+            navigate("/signin");
+        }
+    }, []);
 
     return (
         <>

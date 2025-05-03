@@ -4,6 +4,8 @@ import { AuthContextProviderComponent } from "./components/auth/AuthContextProvi
 import LoginComponent from "./components/LoginComponent";
 import { Box } from "@mui/material";
 import { SnackbarComponent } from "./components/commons/SnackbarComponent";
+import { DashboardComponent } from "./components/home/DashboardComponent";
+import PrivateRoute from "./components/utils/PrivateRoute";
 
 function App() {
 
@@ -16,6 +18,7 @@ function App() {
                         <Box sx={{ mt: 12 }}>
                             <Routes>
                                 <Route path="/signin" element={<LoginComponent />} />
+                                <Route path="/" element={<PrivateRoute><DashboardComponent /></PrivateRoute>} />
                             </Routes>
                         </Box>
                     </SnackbarComponent>
