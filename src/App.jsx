@@ -1,17 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavbarComponent from "./components/commons/NavbarComponent";
+import { AuthContextProviderComponent } from "./components/auth/AuthContextProviderComponent";
 
 function App() {
 
     return (
         <>
             <Router>
-                <NavbarComponent />
-                {/* Snackbar */}
-
-                <Routes>
-                    {/* <Route path="/" /> */}
-                </Routes>
+                <AuthContextProviderComponent>
+                    <NavbarComponent />
+                    {/* Snackbar */}
+                    <Routes>
+                        {/* <Route path="/" /> */}
+                    </Routes>
+                </AuthContextProviderComponent>
             </Router>
         </>
     )

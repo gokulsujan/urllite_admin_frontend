@@ -1,9 +1,11 @@
 import { AccountCircle, AdminPanelSettings, Logout, Person } from "@mui/icons-material"
 import { AppBar, Box, Divider, IconButton, Link, ListItemIcon, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
 import { useState } from "react"
+import { useAuth } from "../auth/AuthContextProviderComponent"
 
 const NavbarComponent = () => {
     const [anchorEl, setAnchorEl] = useState(null)
+    const { isLoggedIn, login, logout } = useAuth();
 
     const handleMenu = (e) => {
         setAnchorEl(e.currentTarget)
@@ -40,7 +42,7 @@ const NavbarComponent = () => {
                         >
                             <Box display="flex" alignItems="center">URLlite&nbsp;<AdminPanelSettings /></Box>
                         </Typography>
-                        <div>
+                        {isLoggedIn && (<div>
                             <IconButton
                                 size="large"
                                 edge="end"
@@ -82,7 +84,8 @@ const NavbarComponent = () => {
                                     Logout
                                 </MenuItem>
                             </Menu>
-                        </div>
+                        </div>)}
+
                     </Toolbar>
                 </AppBar>
             </Box>
