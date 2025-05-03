@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavbarComponent from "./components/commons/NavbarComponent";
 import { AuthContextProviderComponent } from "./components/auth/AuthContextProviderComponent";
+import LoginComponent from "./components/LoginComponent";
+import { Box } from "@mui/material";
+import { SnackbarComponent } from "./components/commons/SnackbarComponent";
 
 function App() {
 
@@ -9,10 +12,13 @@ function App() {
             <Router>
                 <AuthContextProviderComponent>
                     <NavbarComponent />
-                    {/* Snackbar */}
-                    <Routes>
-                        {/* <Route path="/" /> */}
-                    </Routes>
+                    <SnackbarComponent >
+                        <Box sx={{ mt: 12 }}>
+                            <Routes>
+                                <Route path="/signin" element={<LoginComponent />} />
+                            </Routes>
+                        </Box>
+                    </SnackbarComponent>
                 </AuthContextProviderComponent>
             </Router>
         </>
