@@ -40,6 +40,7 @@ import api from '../utils/axios';
 import { useSnackbar } from '../commons/SnackbarComponent';
 import SuspendButtonComponent from '../users/SuspendButtonComponent';
 import ActiveButtonComponent from '../users/ActiveButtonComponent';
+import { useNavigate } from 'react-router-dom';
 
 const loadingStats = [
     { label: 'Active URLs', icon: <LinkIcon fontSize="large" color="primary" />, color: 'primary' },
@@ -59,6 +60,7 @@ export const DashboardComponent = () => {
     const [isLoadingUsers, setIsLoadingUsers] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchDashboardStats = async () => {
@@ -291,7 +293,7 @@ export const DashboardComponent = () => {
                                             </TableCell>
 
                                             <TableCell>
-                                                <Tooltip title="View User Stat"><IconButton color="success"><Assessment /></IconButton></Tooltip>
+                                                <Tooltip title="View User Stat" ><IconButton color="success" onClick={() => navigate("/user/" + user.id)}><Assessment /></IconButton></Tooltip>
                                                 <Tooltip title="Edit User"><IconButton color="info"><Edit /></IconButton></Tooltip>
                                                 {user.status === 'active' ? (
                                                     <SuspendButtonComponent userID={user.id} onStatusChange={handleStatusChange} index={index} />

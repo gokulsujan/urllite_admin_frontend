@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import { SnackbarComponent } from "./components/commons/SnackbarComponent";
 import { DashboardComponent } from "./components/home/DashboardComponent";
 import PrivateRoute from "./components/utils/PrivateRoute";
+import { UserDashboardComponent } from "./components/users/UserDashboardComponent";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                             <Routes>
                                 <Route path="/signin" element={<LoginComponent />} />
                                 <Route path="/" element={<PrivateRoute><DashboardComponent /></PrivateRoute>} />
+                                <Route path="/user/:id" element={<PrivateRoute><UserDashboardComponent /></PrivateRoute>} />
                             </Routes>
                         </Box>
                     </SnackbarComponent>
