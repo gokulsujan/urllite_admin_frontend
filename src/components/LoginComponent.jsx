@@ -62,13 +62,16 @@ const LoginComponent = () => {
                 login()
                 navigate("/")
             } else {
+                debugger
                 showSnackbar(response.data.message, "warning", "bottom", "right")
             }
         } catch (error) {
             if (error.response.data.message) {
+                debugger
                 showSnackbar("Login failed: " + error.response.data.message, "error", "bottom", "right")
             } else {
-                showSnackbar("⚠️ Network error: " + error, "error", "bottom", "right")
+                debugger
+                showSnackbar("⚠️ Network error: " + errorsignin, "error", "bottom", "right")
             }
 
         } finally {

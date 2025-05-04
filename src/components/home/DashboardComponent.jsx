@@ -31,10 +31,15 @@ import {
     WhatsApp,
     Call,
     MailOutline,
-    ContentCopy
+    ContentCopy,
+    Security,
+    DoneAll,
+    RemoveDone
 } from '@mui/icons-material';
 import api from '../utils/axios';
 import { useSnackbar } from '../commons/SnackbarComponent';
+import SuspendButtonComponent from '../users/SuspendButtonComponent';
+import ActiveButtonComponent from '../users/ActiveButtonComponent';
 
 const loadingStats = [
     { label: 'Active URLs', icon: <LinkIcon fontSize="large" color="primary" />, color: 'primary' },
@@ -123,6 +128,31 @@ export const DashboardComponent = () => {
         });
     };
 
+    const handleStatusChange = (index, newStatus) => {
+        users[index].status = newStatus
+        setUsers(users);
+
+        switch (newStatus) {
+            case 'active':
+                modifyStatByLabel('Active Users', +1)
+                modifyStatByLabel('Suspended Users', -1)
+                break
+            case 'suspended':
+                modifyStatByLabel('Active Users', -1)
+                modifyStatByLabel('Suspended Users', +1)
+                break
+
+        }
+    };
+
+    const modifyStatByLabel = (label, delta) => {
+        setStats(prevStats =>
+            prevStats.map(stat =>
+                stat.label === label ? { ...stat, value: stat.value + delta } : stat
+            )
+        );
+    };
+
     return (
         <>
             <Box sx={{ flexGrow: 1, p: 3 }}>
@@ -182,7 +212,7 @@ export const DashboardComponent = () => {
                                     ))
                                 ) : (
                                     filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
-                                        <TableRow key={user.id} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
+                                        <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
                                             <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                                             <TableCell>{user.name}</TableCell>
                                             <TableCell>
@@ -206,13 +236,17 @@ export const DashboardComponent = () => {
                                                 </Box>
                                             </TableCell>
 
-                                            <TableCell>{user.verified_email ? 'Yes' : 'No'}</TableCell>
+                                            <TableCell>{user.verified_email ? <Tooltip title="Verified">
+                                                <IconButton color="success"><DoneAll /></IconButton>
+                                            </Tooltip> : <Tooltip title="Not Verified">
+                                                <IconButton color="error"><RemoveDone /></IconButton>
+                                            </Tooltip>}</TableCell>
                                             <TableCell>
                                                 {user.mobile ? (
                                                     <>
                                                         <Tooltip title={`Send WhatsApp to ${user.mobile}`}>
                                                             <IconButton
-                                                                color="primary"
+                                                                color="success"
                                                                 onClick={() => window.open(`https://wa.me/${user.mobile}`, '_blank')}
                                                             >
                                                                 <WhatsApp fontSize="small" />
@@ -246,11 +280,25 @@ export const DashboardComponent = () => {
                                                     <Chip label="Suspended" color="error" size="small" />
                                                 )}
                                             </TableCell>
-                                            <TableCell>{user.role}</TableCell>
+                                            <TableCell>
+                                                {user.role === 'user' ? (
+                                                    <Tooltip title="User"><Person color="info" /></Tooltip>
+                                                ) : user.role === 'admin' ? (
+                                                    <Tooltip title="Admin"><Security color="warning" /></Tooltip>
+                                                ) : (
+                                                    user.role
+                                                )}
+                                            </TableCell>
+
                                             <TableCell>
                                                 <Tooltip title="View User Stat"><IconButton color="success"><Assessment /></IconButton></Tooltip>
                                                 <Tooltip title="Edit User"><IconButton color="info"><Edit /></IconButton></Tooltip>
-                                                <Tooltip title="Suspend User"><IconButton color="error"><Block /></IconButton></Tooltip>
+                                                {user.status === 'active' ? (
+                                                    <SuspendButtonComponent userID={user.id} onStatusChange={handleStatusChange} index={index} />
+                                                ) : (
+                                                    <ActiveButtonComponent userID={user.id} onStatusChange={handleStatusChange} index={index} />
+                                                )}
+
                                             </TableCell>
                                         </TableRow>
                                     ))
