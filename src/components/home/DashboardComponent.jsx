@@ -160,7 +160,7 @@ export const DashboardComponent = () => {
                             },
 
                             minWidth: 200,
-                        }}>
+                        }} key={index}>
                             <Card sx={{ display: 'flex', alignItems: 'center', p: 2, boxShadow: 2 }}>
                                 <Box sx={{ mr: 2 }}>{stat.icon}</Box>
                                 <CardContent sx={{ p: 0 }}>
