@@ -35,7 +35,7 @@ export const UserDashboardComponent = () => {
                         <UserUsageLineChartComponent userID={id} />
                     )}
                     {tabIndex === 1 && (
-                        <UserUrlsComponent />
+                        <UserUrlsComponent userID={id} />
                     )}
                 </Box>
             </Paper>

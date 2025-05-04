@@ -1,18 +1,35 @@
 import { Box, Card, Typography } from "@mui/material"
+import { useEffect, useState } from "react";
+import api from "../utils/axios";
 
 const shortUrls = [
     { id: 1, short: "sho.rt/abc", original: "https://example.com/longurl1" },
     { id: 2, short: "sho.rt/xyz", original: "https://example.com/longurl2" }
 ];
 
-export const UserUrlsComponent = () => {
+export const UserUrlsComponent = ({ userID }) => {
+    const [urls, setUrls] = useState([])
+    useEffect(() => {
+        const fetchUserUrls = async () => {
+            let response = await api.get(`/api/v1/admin/user/${userID}/urls`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+                },
+            })
+
+            if (response.status == 200) {
+                setUrls(response.data.result.urls)
+            }
+        }
+        fetchUserUrls()
+    }, [userID])
     return (
         <>
             <Box>
-                {shortUrls.map(url => (
+                {urls.map(url => (
                     <Card key={url.id} sx={{ mb: 2, p: 2 }}>
-                        <Typography variant="subtitle1">{url.short}</Typography>
-                        <Typography variant="body2" color="textSecondary">{url.original}</Typography>
+                        <Typography variant="subtitle1">{url.short_url}</Typography>
+                        <Typography variant="body2" color="textSecondary">{url.LongUrl}</Typography>
                     </Card>
                 ))}
             </Box>
