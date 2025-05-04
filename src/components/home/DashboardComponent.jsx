@@ -14,7 +14,6 @@ import {
     TableRow,
     Paper,
     IconButton,
-    Button,
     Tooltip,
     TablePagination,
     Chip
@@ -30,7 +29,6 @@ import {
     Assessment,
     WhatsApp,
     Call,
-    MailOutline,
     ContentCopy,
     Security,
     DoneAll,
@@ -41,6 +39,8 @@ import { useSnackbar } from '../commons/SnackbarComponent';
 import SuspendButtonComponent from '../users/SuspendButtonComponent';
 import ActiveButtonComponent from '../users/ActiveButtonComponent';
 import { useNavigate } from 'react-router-dom';
+import { EmailDisplayComponent } from '../commons/EmailDisplayComponent';
+import { MobileNumberDisplayComponent } from '../commons/MobileNumberDisplayComponent';
 
 const loadingStats = [
     { label: 'Active URLs', icon: <LinkIcon fontSize="large" color="primary" />, color: 'primary' },
@@ -218,59 +218,17 @@ export const DashboardComponent = () => {
                                             <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                                             <TableCell>{user.name}</TableCell>
                                             <TableCell>
-                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                    <Tooltip title={user.email}>
-                                                        <IconButton
-                                                            color="primary"
-                                                            onClick={() => window.location.href = `mailto:${user.email}`}
-                                                        >
-                                                            <MailOutline fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    <Tooltip title="Copy Email">
-                                                        <IconButton
-                                                            color="default"
-                                                            onClick={() => copyToClipboard(user.email)}
-                                                        >
-                                                            <ContentCopy fontSize="small" />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Box>
+                                                <EmailDisplayComponent email={user.email} />
                                             </TableCell>
 
-                                            <TableCell>{user.verified_email ? <Tooltip title="Verified">
+                                            <TableCell>{(user.verified_email == user.email) ? <Tooltip title="Verified">
                                                 <IconButton color="success"><DoneAll /></IconButton>
                                             </Tooltip> : <Tooltip title="Not Verified">
                                                 <IconButton color="error"><RemoveDone /></IconButton>
                                             </Tooltip>}</TableCell>
                                             <TableCell>
                                                 {user.mobile ? (
-                                                    <>
-                                                        <Tooltip title={`Send WhatsApp to ${user.mobile}`}>
-                                                            <IconButton
-                                                                color="success"
-                                                                onClick={() => window.open(`https://wa.me/${user.mobile}`, '_blank')}
-                                                            >
-                                                                <WhatsApp fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip title={`Call ${user.mobile}`}>
-                                                            <IconButton
-                                                                color="primary"
-                                                                onClick={() => window.open(`tel:${user.mobile}`, '_blank')}
-                                                            >
-                                                                <Call fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        <Tooltip title="Copy to Clipboard">
-                                                            <IconButton
-                                                                color="default"
-                                                                onClick={() => copyToClipboard(user.mobile)}
-                                                            >
-                                                                <ContentCopy fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </>
+                                                    <MobileNumberDisplayComponent mobileNumber={user.mobile} />
                                                 ) : (
                                                     'N/A'
                                                 )}
@@ -294,7 +252,7 @@ export const DashboardComponent = () => {
 
                                             <TableCell>
                                                 <Tooltip title="View User Stat" ><IconButton color="success" onClick={() => navigate("/user/" + user.id)}><Assessment /></IconButton></Tooltip>
-                                                <Tooltip title="Edit User"><IconButton color="info"><Edit /></IconButton></Tooltip>
+                                                <Tooltip title="Edit User"><IconButton color="info" onClick={() => navigate("/user/" + user.id + "/edit")}><Edit /></IconButton></Tooltip>
                                                 {user.status === 'active' ? (
                                                     <SuspendButtonComponent userID={user.id} onStatusChange={handleStatusChange} index={index} />
                                                 ) : (

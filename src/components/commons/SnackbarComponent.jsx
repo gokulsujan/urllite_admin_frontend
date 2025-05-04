@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
+import Slide from '@mui/material/Slide';
 
 const SnackbarContext = createContext();
 
@@ -14,6 +15,7 @@ export const SnackbarComponent = ({ children }) => {
         vertical: 'bottom',
         horizontal: 'center',
     });
+
     const showSnackbar = (message, severity = 'info', vertical = 'bottom', horizontal = 'center') => {
         setSnackbar({ open: true, message, severity });
         setAnchorOrigin({ vertical, horizontal });
@@ -28,9 +30,10 @@ export const SnackbarComponent = ({ children }) => {
             {children}
             <Snackbar
                 open={snackbar.open}
-                autoHideDuration={4000}
+                autoHideDuration={5000}  // Set auto close after 5 seconds
                 onClose={handleClose}
                 anchorOrigin={anchorOrigin}
+                TransitionComponent={(props) => <Slide {...props} direction="up" />}  // Apply slide-up transition
             >
                 <Alert
                     onClose={handleClose}

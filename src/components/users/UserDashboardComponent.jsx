@@ -23,7 +23,7 @@ export const UserDashboardComponent = () => {
 
     return (
         <Box sx={{ p: 3 }}>
-            <UserProfileCardComponent />
+            <UserProfileCardComponent userID={id} />
             <UserDashboardStatsComponent />
             <Paper elevation={3} sx={{ p: 2 }}>
                 <Tabs value={tabIndex} onChange={handleTabChange} centered>
