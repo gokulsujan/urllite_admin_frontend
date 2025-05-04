@@ -121,14 +121,6 @@ export const DashboardComponent = () => {
         setPage(0);
     };
 
-    // Function to copy text to clipboard
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-            showSnackbar('Copied to clipboard', 'success', 'bottom', 'right');
-        }).catch(() => {
-            showSnackbar('Failed to copy', 'error', 'bottom', 'right');
-        });
-    };
 
     const handleStatusChange = (index, newStatus) => {
         users[index].status = newStatus
@@ -160,17 +152,25 @@ export const DashboardComponent = () => {
             <Box sx={{ flexGrow: 1, p: 3 }}>
                 <Grid container spacing={2}>
                     {stats.map((stat, index) => (
-                        <Grid item key={index} xs={12} sm={6} md={4} lg={2}>
-                            <Card sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
+                        <Box sx={{
+                            flex: {
+                                xs: '1 1 50%',
+                                sm: '1 1 25%',
+                                md: '1 1 15%',
+                            },
+
+                            minWidth: 200,
+                        }}>
+                            <Card sx={{ display: 'flex', alignItems: 'center', p: 2, boxShadow: 2 }}>
                                 <Box sx={{ mr: 2 }}>{stat.icon}</Box>
-                                <CardContent>
+                                <CardContent sx={{ p: 0 }}>
                                     <Typography variant="subtitle2" color="textSecondary">{stat.label}</Typography>
                                     <Typography variant="h6" color={stat.color}>
                                         {isLoadingStats ? <Skeleton variant="text" sx={{ fontSize: '1rem' }} /> : stat.value}
                                     </Typography>
                                 </CardContent>
                             </Card>
-                        </Grid>
+                        </Box>
                     ))}
                 </Grid>
             </Box>
@@ -192,7 +192,7 @@ export const DashboardComponent = () => {
                             }}
                         />
                     </Box>
-                    <TableContainer sx={{ maxHeight: 500 }}>
+                    <TableContainer ssx={{ height: 'calc(100vh - 120px)' }}>
                         <Table stickyHeader>
                             <TableHead>
                                 <TableRow sx={{ backgroundColor: '#c20e3e' }}>

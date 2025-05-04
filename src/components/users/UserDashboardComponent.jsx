@@ -32,7 +32,7 @@ export const UserDashboardComponent = () => {
                 </Tabs>
                 <Box sx={{ mt: 3 }}>
                     {tabIndex === 0 && (
-                        <UserUsageLineChartComponent />
+                        <UserUsageLineChartComponent userID={id} />
                     )}
                     {tabIndex === 1 && (
                         <UserUrlsComponent />
