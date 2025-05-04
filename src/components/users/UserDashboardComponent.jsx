@@ -24,7 +24,7 @@ export const UserDashboardComponent = () => {
     return (
         <Box sx={{ p: 3 }}>
             <UserProfileCardComponent userID={id} />
-            <UserDashboardStatsComponent />
+            <UserDashboardStatsComponent userID={id} />
             <Paper elevation={3} sx={{ p: 2 }}>
                 <Tabs value={tabIndex} onChange={handleTabChange} centered>
                     <Tab icon={<InsertChart />} label="Usage Analytics" />
