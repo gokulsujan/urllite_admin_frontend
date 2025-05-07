@@ -1,6 +1,7 @@
 import { Box, Card, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import api from "../utils/axios";
+import { UrlComponent } from "../urls/UrlComponent";
 
 const shortUrls = [
     { id: 1, short: "sho.rt/abc", original: "https://example.com/longurl1" },
@@ -27,10 +28,7 @@ export const UserUrlsComponent = ({ userID }) => {
         <>
             <Box>
                 {urls.map(url => (
-                    <Card key={url.id} sx={{ mb: 2, p: 2 }}>
-                        <Typography variant="subtitle1">{url.short_url}</Typography>
-                        <Typography variant="body2" color="textSecondary">{url.LongUrl}</Typography>
-                    </Card>
+                    <UrlComponent id={url.id} shorturl={url.short_url} longUrl={url.LongUrl} />
                 ))}
             </Box>
         </>

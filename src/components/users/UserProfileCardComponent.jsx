@@ -1,6 +1,4 @@
 import {
-    AdminPanelSettings,
-    Block,
     Edit,
     Person,
     Security,
@@ -8,7 +6,6 @@ import {
     WhatsApp,
     Call,
     Verified,
-    ContentCopy,
     Cancel
 } from "@mui/icons-material";
 import {
@@ -31,22 +28,26 @@ import StatsUserSuspendButtonComponent from "./StatsUserSuspendButtonComponent "
 import StatsUserActivateButtonComponent from "./StatsUserActivateButtonComponent ";
 import StatsUserMakeAdminButtonComponent from "./StatsUserMakeAdminButtonComponent";
 import StatsUserRemoveAdminButtonComponent from "./StatsUserRemoveAdminButtonComponent";
+import { useSnackbar } from "../commons/SnackbarComponent";
 
 export const UserProfileCardComponent = ({ userID, setStatus }) => {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const showSnackbar = useSnackbar()
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await api.get("/api/v1/user/" + userID, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+                const response = await api.get(`/api/v1/user/${userID}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('access_token')}`
+                    }
                 });
                 if (response.status === 200) {
                     setUser(response.data.result);
                 } else {
-                    console.error("Failed to fetch user:");
+                    console.error("Failed to fetch user");
                 }
             } catch (error) {
                 console.error("Failed to fetch user:", error);
@@ -57,11 +58,6 @@ export const UserProfileCardComponent = ({ userID, setStatus }) => {
 
         fetchUser();
     }, [userID]);
-
-    // Copy to clipboard utility function
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-    };
 
     return (
         <Card
@@ -91,8 +87,8 @@ export const UserProfileCardComponent = ({ userID, setStatus }) => {
                         {isLoading ? <Skeleton width={120} /> : user.name}
                     </Typography>
 
-                    {/* Mobile Number Icons (WhatsApp and Call) */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {/* Icons for Email, WhatsApp, Call */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, my: 1 }}>
                         {isLoading ? (
                             <Skeleton width={100} />
                         ) : (
@@ -116,42 +112,44 @@ export const UserProfileCardComponent = ({ userID, setStatus }) => {
                         )}
                     </Box>
 
-                    {/* Role and User Icon */}
+                    {/* Role and Status Section */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Typography variant="body2" color="text.secondary">
-                            {isLoading ? <Skeleton width={80} /> :
-                                (user.role === 'user') ? (
-                                    <></>
-                                ) : (user.role === 'admin') ? (
-                                    <Tooltip title="Admin">
-                                        <Security color="warning" sx={{ mr: 1 }} />
+                        {isLoading ? (
+                            <Skeleton width={80} />
+                        ) : (
+                            user.role === 'admin' && (
+                                <Tooltip title="Admin">
+                                    <Security color="warning" sx={{ mr: 1 }} />
+                                </Tooltip>
+                            )
+                        )}
+
+                        {/* Status and Verification */}
+                        {isLoading ? (
+                            <Skeleton width={100} />
+                        ) : (
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Chip
+                                    label={user.status === 'active' ? "Active" : "Suspended"}
+                                    color={user.status === 'active' ? "success" : "error"}
+                                    size="small"
+                                    sx={{ mr: 1 }}
+                                />
+                                {user.email && user.verified_email && user.email === user.verified_email ? (
+                                    <Tooltip title="Verified User">
+                                        <IconButton color="success" sx={{ ml: 1 }}>
+                                            <Verified />
+                                        </IconButton>
                                     </Tooltip>
                                 ) : (
-                                    user.role
-                                )
-                            }
-                        </Typography>
-                        {/* Status Badge */}
-                        <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                            {isLoading ? <Skeleton width={80} /> :
-                                (user.status === 'active') ? (
-                                    <Chip label="Active" color="success" size="small" sx={{ mr: 1 }} />
-                                ) : (
-                                    <Chip label="Suspended" color="error" size="small" sx={{ mr: 1 }} />
-                                )
-                            }
-                            {user.email == user.verified_email ? (
-                                <Tooltip title="Verified User">
-                                    <IconButton color="success" sx={{ ml: 1 }}>
-                                        <Verified />
-                                    </IconButton>
-                                </Tooltip>
-                            ) : <Tooltip title="Not Verified User">
-                                <IconButton color="error" sx={{ ml: 1 }}>
-                                    <Cancel />
-                                </IconButton>
-                            </Tooltip>}
-                        </Typography>
+                                    <Tooltip title="Not Verified User">
+                                        <IconButton color="error" sx={{ ml: 1 }}>
+                                            <Cancel />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                            </Box>
+                        )}
                     </Box>
                 </CardContent>
             </Box>
@@ -164,15 +162,32 @@ export const UserProfileCardComponent = ({ userID, setStatus }) => {
             >
                 {isLoading ? (
                     <>
-                        <Skeleton variant="rectangular" height={36} width={90} />
-                        <Skeleton variant="rectangular" height={36} width={100} />
-                        <Skeleton variant="rectangular" height={36} width={130} />
+                        <Skeleton variant="rounded" height={36} width={90} />
+                        <Skeleton variant="rounded" height={36} width={100} />
+                        <Skeleton variant="rounded" height={36} width={130} />
                     </>
                 ) : (
                     <>
-                        <Button variant="outlined" size="small" onClick={() => navigate("/user/" + user.id + "/edit")} startIcon={<Edit />}>Edit</Button>
-                        {(user.status === 'active' ? <StatsUserSuspendButtonComponent userID={user.id} /> : <StatsUserActivateButtonComponent userID={user.id} />)}
-                        {(user.role === 'user' ? <StatsUserMakeAdminButtonComponent userID={user.id} /> : <StatsUserRemoveAdminButtonComponent userID={user.id} />)}
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => navigate(`/user/${user.id}/edit`)}
+                            startIcon={<Edit />}
+                        >
+                            Edit
+                        </Button>
+
+                        {user.status === 'active' ? (
+                            <StatsUserSuspendButtonComponent userID={user.id} />
+                        ) : (
+                            <StatsUserActivateButtonComponent userID={user.id} />
+                        )}
+
+                        {user.role === 'user' ? (
+                            <StatsUserMakeAdminButtonComponent userID={user.id} />
+                        ) : (
+                            <StatsUserRemoveAdminButtonComponent userID={user.id} />
+                        )}
                     </>
                 )}
             </Stack>
