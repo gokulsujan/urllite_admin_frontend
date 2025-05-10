@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import {
     Card, Typography, Box, Stack,
-    Skeleton
+    Skeleton,
+    Link
 } from "@mui/material"
 import {
     AssessmentOutlined,
@@ -12,6 +13,7 @@ import {
 } from "@mui/icons-material"
 import api from "../utils/axios"
 import { useSnackbar } from "../commons/SnackbarComponent"
+import { Link as RouterLink } from "react-router-dom"
 
 export const UrlComponent = ({ id, shorturl, longUrl, status, createdAt }) => {
     const [urlMeta, setUrlMeta] = useState({})
@@ -42,7 +44,7 @@ export const UrlComponent = ({ id, shorturl, longUrl, status, createdAt }) => {
         fetchUrlData()
     }, [id])
 
-    function completeUrlForFavicon(url, baseUrl, status) {
+    function completeUrlForFavicon(url, baseUrl) {
         if (!url || typeof url !== 'string') {
             return null; // or return a default URL if needed
         }
@@ -52,6 +54,7 @@ export const UrlComponent = ({ id, shorturl, longUrl, status, createdAt }) => {
             return url;
         }
 
+        debugger
         const { origin } = new URL(baseUrl);
         return origin + '/' + url.replace(/^\/+/, '');
     }
@@ -81,7 +84,11 @@ export const UrlComponent = ({ id, shorturl, longUrl, status, createdAt }) => {
                         sx={{ width: 32, height: 32, flexShrink: 0, mr: 1 }}
                     />
                 )}
-                <Typography variant="subtitle1">{urlMeta.title || shorturl}</Typography>
+                <Typography variant="subtitle1">
+                    <Link component={RouterLink} to={`/url/${id}`} underline="hover">
+                        {urlMeta.title || shorturl}
+                    </Link>
+                </Typography>
             </Box>
 
             <Typography variant="body2" color="textSecondary" gutterBottom>

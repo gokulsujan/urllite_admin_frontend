@@ -99,7 +99,7 @@ export const UserProfileCardComponent = ({ userID, setStatus }) => {
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title={`Send WhatsApp to ${user.mobile}`}>
-                                    <IconButton color="success" onClick={() => window.open(`https://wa.me/${user.mobile}`, '_blank')}>
+                                    <IconButton color="success" onClick={() => wUserProfileCardComponentindow.open(`https://wa.me/${user.mobile}`, '_blank')}>
                                         <WhatsApp fontSize="small" />
                                     </IconButton>
                                 </Tooltip>

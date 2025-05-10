@@ -8,6 +8,7 @@ import { DashboardComponent } from "./components/home/DashboardComponent";
 import PrivateRoute from "./components/utils/PrivateRoute";
 import { UserDashboardComponent } from "./components/users/UserDashboardComponent";
 import UserEditComponent from "./components/users/UserEditComponent";
+import { UrlDetailsComponent } from "./components/urls/UrlDetailsComponent";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
                                 <Route path="/" element={<PrivateRoute><DashboardComponent /></PrivateRoute>} />
                                 <Route path="/user/:id" element={<PrivateRoute><UserDashboardComponent /></PrivateRoute>} />
                                 <Route path="/user/:userID/edit" element={<PrivateRoute><UserEditComponent /></PrivateRoute>} />
+                                <Route path="/url/:urlID" element={<PrivateRoute><UrlDetailsComponent /></PrivateRoute>} />
                             </Routes>
                         </Box>
                     </SnackbarComponent>
