@@ -28,7 +28,7 @@ export const UserUrlsComponent = ({ userID }) => {
         <>
             <Box>
                 {urls.map(url => (
-                    <UrlComponent id={url.id} shorturl={url.short_url} longUrl={url.LongUrl} />
+                    <UrlComponent key={url.id} id={url.id} shorturl={url.short_url} longUrl={url.LongUrl} status={url.status} createdAt={url.created_at} />
                 ))}
             </Box>
         </>

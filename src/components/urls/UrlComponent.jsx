@@ -1,24 +1,22 @@
 import { useEffect, useState } from "react"
-import { Card, Typography, Avatar, Box } from "@mui/material"
+import {
+    Card, Typography, Box, Stack,
+    Skeleton
+} from "@mui/material"
+import {
+    AssessmentOutlined,
+    CheckCircleOutline,
+    CancelOutlined,
+    HourglassEmpty,
+    CalendarToday
+} from "@mui/icons-material"
 import api from "../utils/axios"
-import { AssessmentOutlined } from "@mui/icons-material"
+import { useSnackbar } from "../commons/SnackbarComponent"
 
-export const UrlComponent = ({ id, shorturl, longUrl }) => {
+export const UrlComponent = ({ id, shorturl, longUrl, status, createdAt }) => {
     const [urlMeta, setUrlMeta] = useState({})
-
-    function completeUrlForFavicon(url, baseUrl) {
-        const isFullUrl = /^(http:\/\/|https:\/\/|www\.)/i.test(url);
-        if (isFullUrl) {
-            return url;
-        }
-
-        // Extract origin (protocol + domain) from base URL
-        const { origin } = new URL(baseUrl);
-
-        // Attach endpoint to origin
-        return origin + '/' + url.replace(/^\/+/, '');
-    }
-
+    const [isLoading, setIsLoading] = useState(true)
+    const showSnackbar = useSnackbar()
 
     useEffect(() => {
         const fetchUrlData = async () => {
@@ -29,40 +27,90 @@ export const UrlComponent = ({ id, shorturl, longUrl }) => {
                     }
                 })
                 if (response.status === 200) {
-                    setUrlMeta(response.data.result.meta)
+                    const data = response.data.result
+                    setUrlMeta(data.meta)
                 } else {
                     showSnackbar("Failed to fetch URL data", "error", "bottom", "right")
                 }
             } catch (error) {
                 showSnackbar("Failed to fetch URL data: " + error.message, "error", "bottom", "right")
             }
+
+            setIsLoading(false)
         }
 
         fetchUrlData()
     }, [id])
 
+    function completeUrlForFavicon(url, baseUrl, status) {
+        if (!url || typeof url !== 'string') {
+            return null; // or return a default URL if needed
+        }
+
+        const isFullUrl = /^(http:\/\/|https:\/\/|www\.)/i.test(url);
+        if (isFullUrl) {
+            return url;
+        }
+
+        const { origin } = new URL(baseUrl);
+        return origin + '/' + url.replace(/^\/+/, '');
+    }
+
+
+    const getStatusIcon = (status) => {
+        switch (status.toLowerCase()) {
+            case "active":
+                return <CheckCircleOutline sx={{ color: "green", mr: 1 }} />;
+            case "inactive":
+                return <CancelOutlined sx={{ color: "red", mr: 1 }} />;
+            case "pending":
+                return <HourglassEmpty sx={{ color: "orange", mr: 1 }} />;
+            default:
+                return <HourglassEmpty sx={{ color: "gray", mr: 1 }} />;
+        }
+    }
+
     return (
         <Card sx={{ mb: 2, p: 2 }}>
             <Box display="flex" alignItems="center" mb={1}>
-                {urlMeta.favicon && (
+                {isLoading ? (<Skeleton variant="circular" width={40} height={40} />) : (
                     <Box
                         component="img"
                         src={completeUrlForFavicon(urlMeta.favicon, longUrl)}
                         alt="favicon"
-                        sx={{ width: 32, height: 32, flexShrink: 0 }}
+                        sx={{ width: 32, height: 32, flexShrink: 0, mr: 1 }}
                     />
                 )}
                 <Typography variant="subtitle1">{urlMeta.title || shorturl}</Typography>
             </Box>
+
             <Typography variant="body2" color="textSecondary" gutterBottom>
                 {longUrl}
             </Typography>
+
             {urlMeta.interactions !== undefined && (
-                <Box display="flex" alignItems="center">
-                    <AssessmentOutlined sx={{ position: 'relative', color: 'green', top: '2px', marginRight: 1 }} />
-                    {urlMeta.interactions} engagements
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                    <Box display="flex" alignItems="center">
+                        <AssessmentOutlined sx={{ position: 'relative', color: 'green', top: '2px', mr: 1 }} />
+                        {urlMeta.interactions} engagements
+                    </Box>
+
+                    <Box display="flex" alignItems="center">
+                        {getStatusIcon(status)}
+                        <Typography variant="body2" color="textSecondary" ml={1}>
+                            <strong>Status:</strong> {status}
+                        </Typography>
+                    </Box>
+
+                    <Box display="flex" alignItems="center">
+                        <CalendarToday sx={{ color: "gray", mr: 1 }} />
+                        <Typography variant="body2" color="textSecondary">
+                            <strong>Created at:</strong> {new Date(createdAt).toLocaleString()}
+                        </Typography>
+                    </Box>
                 </Box>
             )}
+
         </Card>
     )
 }
