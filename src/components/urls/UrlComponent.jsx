@@ -54,7 +54,6 @@ export const UrlComponent = ({ id, shorturl, longUrl, status, createdAt }) => {
             return url;
         }
 
-        debugger
         const { origin } = new URL(baseUrl);
         return origin + '/' + url.replace(/^\/+/, '');
     }
